@@ -14,7 +14,7 @@
               item-text="name"
               item-value="id"
               label="Gender"
-              :on-change="resetOption()"
+              @change="resetOption()"
             ></v-select>
 
             <v-select
@@ -23,7 +23,7 @@
               item-text="name"
               item-value="id"
               label="tested/untested"
-              :on-change="resetOption()"
+              @change="resetOption()"
             ></v-select>
 
             <v-select
@@ -31,58 +31,78 @@
               v-model="weightClass"
               item-text="name"
               item-value="id"
-              label="weight class"
-              :on-change="showClassData()"
+              :label="`Weight Class (${unit})`"
+              @change="showTableData()"
             ></v-select>
+                <v-switch
+               v-model="detailSwitch"
+              :label="`Detailed Data: ${detailSwitch.toString()}`"
+               ></v-switch>
 
             </v-col>
             <v-col cols="2" justify="center">
             <v-text-field
             v-model="formSquat"
-            label="Squat"
+            :label="`Squat 1RM (${unit})`"
           ></v-text-field>
             <v-text-field
             v-model="formBench"
-            label="Bench"
+            :label="`Bench 1RM (${unit})`"
           ></v-text-field>
             <v-text-field
             v-model="formDeadlift"
-            label="Deadlift"
+            :label="`Deadlift 1RM (${unit})`"
           ></v-text-field>
             <v-text-field
             v-model="formTotal"
-            label="Total"
+            :label="`Total (${unit})`"
           ></v-text-field>
             </v-col>
             </v-row>
             </v-container>
             </div>
+          <v-row v-if="showData">
+            <v-col cols="3" justify="center">
+      </v-col>
+      <v-col cols="6" justify="center">
+        <v-row> <b>Compared to the lifters in the {{gender}} {{weightClass}}
+          ({{testedStatus}}) class - approx {{classDataSize}} lifters:</b>
+        </v-row>
+        <v-row>
+      Your Squat is better or equal to {{resSquat}}%
+      </v-row>
+        <v-row>
+      Your Bench is better than {{resBench}}%
+      </v-row>
+        <v-row>
+      Your Deadlift is better than {{resDeadlift}}%
+      </v-row>
+        <v-row>
+      Your Total is better than {{resTotal}}%
+      </v-row>
+      </v-col>
+
+          </v-row>
 <v-row v-if="showData">
 <v-col cols="3" justify="center">
       </v-col>
   <v-col cols="1" justify="center">
-    <tr>Results</tr>
     <tr><h2>Pecentile</h2></tr>
      <tr v-for="(item) of classData.Squat" :key="item">{{item[0]}}</tr>
   </v-col>
-
       <v-col cols="1" justify="center">
-        {{resSquat}}%
        <tr><h2>Squat</h2></tr>
         <tr v-for="item of classData.Squat" :key="item">{{item[1]}}</tr>
       </v-col>
       <v-col cols="1" justify="center">
-        {{resBench}}%
         <tr><h2>Bench</h2></tr>
         <tr v-for="item of classData.Bench" :key="item"> {{item[1]}}</tr>
       </v-col>
       <v-col cols="1" justify="center">
-        {{resDeadlift}}%
         <tr><h2>Deadlift</h2></tr>
         <tr v-for="item of classData.Deadlift" :key="item"> {{item[1]}}</tr>
       </v-col>
       <v-col cols="1" justify="center">
-        {{resTotal}}%
         <tr><h2>Total</h2></tr>
         <tr v-for="item of classData.Total" :key="item"> {{item[1]}}</tr>
       </v-col>
@@ -100,11 +120,6 @@ export default {
   data() {
     return {
       // data: allData,
-      classData2: {
-        m53raw: {
-          Squat: [], Bench: [], Deadlift: [], Total: [],
-        },
-      },
       genderSelections: ['Male', 'Female'],
       gender: 'Male',
       weightClassAll: {
@@ -124,72 +139,125 @@ export default {
       formBench: '',
       formDeadlift: '',
       formTotal: '',
-      showData: true,
+      showData: false,
+      detailSwitch: false,
+      unit: 'kg',
+
     };
   },
   computed: {
     classData() {
-      if (this.weightClass === '') {
+      if (this.weightClassSelections.includes(this.weightClass) === false) {
         return [];
       }
       const wClassCode = `${this.gender.slice(0, 1)}${this.weightClass}raw`;
       console.log(wClassCode);
-      return allData[wClassCode];
+      const fullData = allData[wClassCode];
+      const minData = {};
+      const keys = Object.keys(fullData);
+
+      const percentileScale = this.detailSwitch ? 1 : 5;
+
+      keys.forEach((key, index) => {
+        console.log(`${key} ${index}`);
+        console.log(fullData[key]);
+        minData[key] = fullData[key].filter((item) => item[0] % percentileScale === 0);
+      });
+      return minData;
     },
-    selectedClass() {
-      const wclass = `${this.gender}${this.testedStatus}`;
-      console.log(wclass);
-      return wclass;
+    classDataSize() {
+      if (this.weightClassSelections.includes(this.weightClass) === false) {
+        return '';
+      }
+      const wClassCode = `${this.gender.slice(0, 1)}${this.weightClass}raw`;
+      console.log(wClassCode);
+      const classSize = allData[wClassCode].Total[1][3];
+      return classSize * 100;
     },
     weightClassSelections() {
-      return this.weightClassAll[this.selectedClass];
+      const wclass = `${this.gender}${this.testedStatus}`;
+      console.log(wclass);
+      return this.weightClassAll[wclass];
     },
     resSquat() {
-      // const res = allData[`${this.gender.slice(0, 1)}${this.weightClass}raw`].Squat;
-      const res = [[0, 1]];
+      if (this.weightClass === '') {
+        return 0;
+      }
+      const res = allData[`${this.gender.slice(0, 1)}${this.weightClass}raw`].Squat;
+      // const res = [[0, 1]];
       const filtered = res.filter((oneDay) => oneDay[1] > this.formSquat);
+      if (filtered.length === 0) {
+        return 100;
+      }
       return filtered.pop()[0] - 1;
     },
     resBench() {
-      // const res = allData[`${this.gender.slice(0, 1)}${this.weightClass}raw`].Bench;
-      const res = [[0, 1]];
+      if (this.weightClass === '') {
+        return 0;
+      }
+      const res = allData[`${this.gender.slice(0, 1)}${this.weightClass}raw`].Bench;
       const filtered = res.filter((oneDay) => oneDay[1] > this.formBench);
+      if (filtered.length === 0) {
+        return 100;
+      }
       return filtered.pop()[0] - 1;
     },
     resDeadlift() {
-      // const res = allData[`${this.gender.slice(0, 1)}${this.weightClass}raw`].Deadlift;
-      const res = [[0, 1]];
+      if (this.weightClass === '') {
+        console.log('breaks');
+        return 0;
+      }
+      console.log('check');
+      console.log(this.allData);
+
+      const res = allData[`${this.gender.slice(0, 1)}${this.weightClass}raw`].Deadlift;
+      // const res = [[0, 1]];
       const filtered = res.filter((oneDay) => oneDay[1] > this.formDeadlift);
+      if (filtered.length === 0) {
+        return 100;
+      }
       return filtered.pop()[0] - 1;
     },
     resTotal() {
-      // const res = allData[`${this.gender.slice(0, 1)}${this.weightClass}raw`].Total;
-      const res = [[0, 1]];
+      if (this.weightClass === '') {
+        return 0;
+      }
+      const res = allData[`${this.gender.slice(0, 1)}${this.weightClass}raw`].Total;
+      // const res = [[0, 1]];
       const filtered = res.filter((oneDay) => oneDay[1] > this.formTotal);
+      if (filtered.length === 0) {
+        return 100;
+      }
       return filtered.pop()[0] - 1;
     },
   },
   methods: {
     resetOption() {
-      // this.weightClass = 'N/A';
-      console.log(this.weightClass);
-      console.log('HELLO');
-      if (!(this.weightClassSelections.includes(this.weightClass))) {
-        this.showData = false;
-      } else {
-        this.showData = true;
-      }
+      this.weightClass = 'N/A';
+      this.showData = false;
       // this.weightClass = '';
     },
-    showClassData() {
-      console.log('Test');
-      if (this.weightClass === '') {
-        this.classData2 = [];
-      }
-      const wClassCode = `${this.gender.slice(0, 1)}${this.weightClass}raw`;
-      console.log(wClassCode);
-      this.classData2 = allData[wClassCode];
+    showTableData() {
+      this.showData = true;
+      console.log('show data?');
     },
+    // showClassData() {
+    //   console.log('Test');
+    //   if (this.weightClass === '') {
+    //     this.classData2 = [];
+    //   }
+    //   const wClassCode = `${this.gender.slice(0, 1)}${this.weightClass}raw`;
+    //   console.log(wClassCode);
+    //   this.classData2 = allData[wClassCode];
+    // },
+    // genData(){
+    //   if (this.weightClassSelections.includes(this.weightClass) === false) {
+    //     return [];
+    //   }
+    //   const wClassCode = `${this.gender.slice(0, 1)}${this.weightClass}raw`;
+    //   console.log(wClassCode);
+    //   return allData[wClassCode];
+    // },
   },
 };
 </script>
