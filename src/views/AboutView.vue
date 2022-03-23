@@ -35,8 +35,16 @@
               @change="showTableData()"
             ></v-select>
                 <v-switch
-               v-model="detailSwitch"
-              :label="`Detailed Data: ${detailSwitch.toString()}`"
+               v-model="percentilesShown"
+               true-value=1
+               false-value=5
+              :label="'Detailed Data'"
+               ></v-switch>
+                <v-switch
+               v-model="unit"
+               true-value=lb
+               false-value=kg
+              :label="`Unit: ${unit.toString()}`"
                ></v-switch>
 
             </v-col>
@@ -65,20 +73,20 @@
             <v-col cols="3" justify="center">
       </v-col>
       <v-col cols="6" justify="center">
-        <v-row> <b>Compared to the lifters in the {{gender}} {{weightClass}}
-          ({{testedStatus}}) class - approx {{classDataSize}} lifters:</b>
+        <v-row> <h3>Compared to the lifters in the {{gender}} {{weightClass}}
+          ({{testedStatus}}) class - approx {{classDataSize}} lifters:</h3>
         </v-row>
         <v-row>
-      Your Squat is better or equal to {{resSquat}}%
+      Your Squat is better or equal than {{resSquat}}%
       </v-row>
         <v-row>
-      Your Bench is better than {{resBench}}%
+      Your Bench is better or equal than {{resBench}}%
       </v-row>
         <v-row>
-      Your Deadlift is better than {{resDeadlift}}%
+      Your Deadlift is better or equal than {{resDeadlift}}%
       </v-row>
         <v-row>
-      Your Total is better than {{resTotal}}%
+      Your Total is better or equal than {{resTotal}}%
       </v-row>
       </v-col>
 
@@ -110,6 +118,7 @@
 </v-row>
       <!-- {{ data }} -->
   </div>
+
   </div>
 </template>
 
@@ -123,12 +132,20 @@ export default {
       genderSelections: ['Male', 'Female'],
       gender: 'Male',
       weightClassAll: {
-        MaleTested: ['59', '66', '74', '83', '93', '105', '120', '120+'],
-        MaleUntested: ['52', '56', '60', '67.5', '75', '82.5', '90', '100', '110', '125', '140', '140+'],
-        FemaleTested: ['43', '47', '52', '57', '63', '72', '84', '84+'],
-        FemaleUntested: ['44', '48', '52', '56', '60', '67.5', '75', '82.5', '90', '90+'],
+        kg: {
+          MaleTested: ['53', '59', '66', '74', '83', '93', '105', '120', '120+'],
+          MaleUntested: ['52', '56', '60', '67.5', '75', '82.5', '90', '100', '110', '125', '140', '140+'],
+          FemaleTested: ['43', '47', '52', '57', '63', '69', '76', '84', '84+'],
+          FemaleUntested: ['44', '48', '52', '56', '60', '67.5', '75', '82.5', '90', '90+'],
+        },
+        lb: {
+          MaleTested: ['116', '130', '145', '163', '183', '205', '231', '264', '264+'],
+          MaleUntested: ['114', '123', '132', '148', '165', '181', '198', '220', '242', '275', '308', '308+'],
+          FemaleTested: ['94', '103', '114', '125', '138', '152', '168', '185', '185+'],
+          FemaleUntested: ['97', '105', '114', '123', '132', '148', '165', '181', '198', '198+'],
+        },
       },
-      weightClass: '',
+      weightClass: '74',
       testedSelections: ['Tested', 'Untested'],
       testedStatus: 'Tested',
       // resSquat: '',
@@ -139,13 +156,26 @@ export default {
       formBench: '',
       formDeadlift: '',
       formTotal: '',
-      showData: false,
-      detailSwitch: false,
+      showData: true,
+      percentilesShown: 5,
       unit: 'kg',
 
     };
   },
   computed: {
+    derivedWeightClass() {
+      if (this.weightClass === '') {
+        return '';
+      }
+      if (this.unit === 'lb') {
+        const index = this.weightClassAll.lb[`${this.gender}${this.testedStatus}`].indexOf(this.weightClass);
+        console.log(index);
+        console.log(this.weightClassAll.kg[`${this.gender}${this.testedStatus}`][index]);
+        return this.weightClassAll.kg[`${this.gender}${this.testedStatus}`][index];
+      }
+
+      return this.weightClass;
+    },
     classData() {
       if (this.weightClassSelections.includes(this.weightClass) === false) {
         return [];
@@ -156,12 +186,10 @@ export default {
       const minData = {};
       const keys = Object.keys(fullData);
 
-      const percentileScale = this.detailSwitch ? 1 : 5;
-
       keys.forEach((key, index) => {
         console.log(`${key} ${index}`);
         console.log(fullData[key]);
-        minData[key] = fullData[key].filter((item) => item[0] % percentileScale === 0);
+        minData[key] = fullData[key].filter((item) => item[0] % this.percentilesShown === 0);
       });
       return minData;
     },
@@ -177,7 +205,8 @@ export default {
     weightClassSelections() {
       const wclass = `${this.gender}${this.testedStatus}`;
       console.log(wclass);
-      return this.weightClassAll[wclass];
+      console.log(this.unit);
+      return this.weightClassAll[this.unit][wclass];
     },
     resSquat() {
       if (this.weightClass === '') {
@@ -258,6 +287,14 @@ export default {
     //   console.log(wClassCode);
     //   return allData[wClassCode];
     // },
+
+    // let tempWeightClass = this.weightClass;
+    // if (this.unit === 'lb') {
+    //   const index = this.weightClassAll.lb[`${this.gender}${this.testedStatus}`].
+    // indexOf(this.weightClass);
+    //   tempWeightClass = this.weightClassAll.kg[`${this.gender}${this.testedStatus}`][index];
+    // }
+
   },
 };
 </script>
