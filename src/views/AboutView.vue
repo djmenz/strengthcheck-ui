@@ -1,80 +1,130 @@
 <template>
   <div class="about">
-    <h1>Check how you rank amongst all powerlifting competitors</h1>
+    <h1>Select a weight class and enter your lifts to see how you rank</h1>
       <div id="app">
             <div>
               <v-container fluid>
     <v-row>
-      <v-col cols="4" justify="center">
-      </v-col>
-    <v-col cols="2" justify="center">
+      <!-- <v-col cols="4" justify="center">
+      </v-col> -->
+    <v-col cols="12" justify="center">
         <v-select
               :items="genderSelections"
               v-model="gender"
               item-text="name"
               item-value="id"
               label="Gender"
+              outlined="true"
               @change="resetOption()"
             ></v-select>
 
             <v-select
               :items="testedSelections"
               v-model="testedStatus"
-              item-text="name"
-              item-value="id"
-              label="tested/untested"
+              item-text="text"
+              item-value="value"
+              label="Division"
+              outlined="true"
               @change="resetOption()"
             ></v-select>
 
-            <v-select
-              :items="weightClassSelections"
-              v-model="weightClass"
-              item-text="name"
-              item-value="id"
-              :label="`Weight Class (${unit})`"
-              @change="showTableData()"
-            ></v-select>
-                <v-switch
-               v-model="percentilesShown"
-               true-value=1
-               false-value=5
-              :label="'Detailed Data'"
-               ></v-switch>
-                <v-switch
+            <v-row>
+
+              <v-col cols="8" justify="center">
+              <v-select
+                :items="weightClassSelections"
+                v-model="weightClass"
+                item-text="text"
+                item-value="value"
+                outlined="true"
+                :menu-props="{maxHeight: 804}"
+                :label="`Weight Class (${unit})`"
+                @change="showTableData()"
+              ></v-select>
+              </v-col>
+
+            <v-col cols="4" justify="center">
+              <v-switch
                v-model="unit"
                true-value=lb
                false-value=kg
-              :label="`Unit: ${unit.toString()}`"
+              :label="`Units: ${unit.toString()}`"
                ></v-switch>
+              </v-col>
 
+            </v-row>
             </v-col>
-            <v-col cols="2" justify="center">
+<v-container fluid>
+    <v-row>
+            <v-col cols="8" justify="center">
             <v-text-field
             v-model="formSquat"
-            :label="`Squat 1RM (${unit})`"
+            outlined="true"
+            type="number"
+            :label="`Enter your Squat 1RM (${unit})`"
           ></v-text-field>
+            </v-col>
+            <v-col cols="4" justify="center">
+                <v-switch
+               v-if="testedStatus==='Untested'"
+               v-model="knee"
+               true-value='Wraps'
+               false-value='Raw'
+              :label="`${kneeLabel.toString()}`"
+               ></v-switch>
+            </v-col>
+    </v-row>
+</v-container>
+
+<v-container fluid>
+    <v-row>
+            <v-col cols="8" justify="center">
             <v-text-field
             v-model="formBench"
-            :label="`Bench 1RM (${unit})`"
+             outlined=true
+            type="number"
+            :label="`Enter your Bench 1RM (${unit})`"
           ></v-text-field>
             <v-text-field
             v-model="formDeadlift"
-            :label="`Deadlift 1RM (${unit})`"
+             outlined=true
+            type="number"
+            :label="`Enter your Deadlift 1RM (${unit})`"
           ></v-text-field>
+           </v-col>
+    </v-row>
+
+</v-container>
+          <v-row>
+            <v-col cols="8" justify="center">
+
             <v-text-field
             v-model="formTotal"
-            :label="`Total (${unit})`"
+             outlined=true
+            type="number"
+            :label="`Enter your best Total (${unit})`"
           ></v-text-field>
             </v-col>
+          <v-col cols="3" justify="center">
+            <v-btn
+            color="white"
+            class="mr-3"
+            @click="resetLifts()"
+          >
+            Reset
+          </v-btn>
+           </v-col>
+            </v-row>
+
             </v-row>
             </v-container>
             </div>
+
+            <v-container fluid>
           <v-row v-if="showData">
-            <v-col cols="3" justify="center">
-      </v-col>
-      <v-col cols="6" justify="center">
-        <v-row> <h3>Compared to the lifters in the {{gender}} {{weightClass}}
-          ({{testedStatus}}) class - approx {{classDataSize}} lifters:</h3>
+      <v-col cols="12" justify="center">
+        <v-row> <h3>Compared to all lifters in the {{gender}} {{weightClass}}
+          ({{testedStatus}} {{knee}}) class - approx {{classDataSize}} lifters:</h3>
         </v-row>
         <v-row>
       Your Squat is better or equal than {{resSquat}}%
@@ -89,33 +139,51 @@
       Your Total is better or equal than {{resTotal}}%
       </v-row>
       </v-col>
-
           </v-row>
+ </v-container>
+ <v-container fluid>
+     <v-row v-if="showData">
+                 <v-switch
+               v-model="percentilesShown"
+               true-value=1
+               false-value=5
+              :label="'Show Detailed Percentile Data'"
+               ></v-switch>
+               </v-row>
 <v-row v-if="showData">
-<v-col cols="3" justify="center">
-      </v-col>
-  <v-col cols="1" justify="center">
-    <tr><h2>Pecentile</h2></tr>
+<!-- <v-col cols="3" justify="center">
+      </v-col> -->
+  <v-col cols="3" justify="center">
+    <tr><h4>Pecentile</h4></tr>
      <tr v-for="(item) of classData.Squat" :key="item">{{item[0]}}</tr>
   </v-col>
-      <v-col cols="1" justify="center">
-       <tr><h2>Squat</h2></tr>
-        <tr v-for="item of classData.Squat" :key="item">{{item[1]}}</tr>
+      <v-col cols="2" justify="center">
+       <tr><h4>Squat</h4></tr>
+        <tr v-for="item of classData.Squat"
+        :key="item">{{myRound(item[1] * unitMultiplier)}}</tr>
       </v-col>
-      <v-col cols="1" justify="center">
-        <tr><h2>Bench</h2></tr>
-        <tr v-for="item of classData.Bench" :key="item"> {{item[1]}}</tr>
+      <v-col cols="2" justify="center">
+        <tr><h4>Bench</h4></tr>
+        <tr v-for="item of classData.Bench"
+        :key="item"> {{myRound(item[1] * unitMultiplier)}}</tr>
       </v-col>
-      <v-col cols="1" justify="center">
-        <tr><h2>Deadlift</h2></tr>
-        <tr v-for="item of classData.Deadlift" :key="item"> {{item[1]}}</tr>
+      <v-col cols="2" justify="center">
+        <tr><h4>Deadlift</h4></tr>
+        <tr v-for="item of classData.Deadlift"
+        :key="item"> {{myRound(item[1] * unitMultiplier)}}</tr>
       </v-col>
-      <v-col cols="1" justify="center">
-        <tr><h2>Total</h2></tr>
-        <tr v-for="item of classData.Total" :key="item"> {{item[1]}}</tr>
+      <v-col cols="2" justify="center">
+        <tr><h4>Total</h4></tr>
+        <tr v-for="item of classData.Total"
+        :key="item"> {{myRound(item[1] * unitMultiplier)}}</tr>
       </v-col>
+      * Note Bench and Deadlift tables include single lift competition results
         <!-- <ul><li v-for="elem in row" :key="elem">{{elem}}</li></ul> -->
 </v-row>
+<v-row v-if="!showData">
+  <h3>Please Select a Weight Class</h3>
+</v-row>
+ </v-container>
       <!-- {{ data }} -->
   </div>
 
@@ -131,22 +199,117 @@ export default {
       // data: allData,
       genderSelections: ['Male', 'Female'],
       gender: 'Male',
+      liftFormRules: [
+        (v) => typeof v === 'number' || 'Must be a number', // doesnt work
+      ],
       weightClassAll: {
         kg: {
-          MaleTested: ['53', '59', '66', '74', '83', '93', '105', '120', '120+'],
-          MaleUntested: ['52', '56', '60', '67.5', '75', '82.5', '90', '100', '110', '125', '140', '140+'],
-          FemaleTested: ['43', '47', '52', '57', '63', '69', '76', '84', '84+'],
-          FemaleUntested: ['44', '48', '52', '56', '60', '67.5', '75', '82.5', '90', '90+'],
+          MaleTested: [
+            { text: '53', value: '53' },
+            { text: '59', value: '59' },
+            { text: '66', value: '66' },
+            { text: '74 ', value: '74' },
+            { text: '83', value: '83' },
+            { text: '93', value: '93' },
+            { text: '105', value: '105' },
+            { text: '105', value: '105' },
+            { text: '120', value: '120' },
+            { text: '120+', value: '120+' },
+          ],
+          MaleUntested: [
+            { text: '52', value: '52' },
+            { text: '56', value: '56' },
+            { text: '60', value: '60' },
+            { text: '67.5', value: '67.5' },
+            { text: '75', value: '75' },
+            { text: '82.5', value: '82.5' },
+            { text: '90', value: '90' },
+            { text: '100', value: '100' },
+            { text: '110', value: '110' },
+            { text: '125', value: '125' },
+            { text: '140', value: '140' },
+            { text: '140+', value: '140+' },
+          ],
+          FemaleTested: [
+            { text: '43', value: '43' },
+            { text: '47', value: '47' },
+            { text: '52', value: '52' },
+            { text: '57', value: '57' },
+            { text: '63', value: '63' },
+            { text: '69', value: '69' },
+            { text: '76', value: '76' },
+            { text: '84', value: '84' },
+            { text: '84+', value: '84+' },
+          ],
+          FemaleUntested: [
+            { text: '44', value: '44' },
+            { text: '48', value: '48' },
+            { text: '52', value: '52' },
+            { text: '56', value: '56' },
+            { text: '60', value: '60' },
+            { text: '67.5', value: '67.5' },
+            { text: '75', value: '75' },
+            { text: '82.5', value: '82.5' },
+            { text: '90', value: '90' },
+            { text: '90+', value: '90+' },
+          ],
         },
         lb: {
-          MaleTested: ['116', '130', '145', '163', '183', '205', '231', '264', '264+'],
-          MaleUntested: ['114', '123', '132', '148', '165', '181', '198', '220', '242', '275', '308', '308+'],
-          FemaleTested: ['94', '103', '114', '125', '138', '152', '168', '185', '185+'],
-          FemaleUntested: ['97', '105', '114', '123', '132', '148', '165', '181', '198', '198+'],
+          MaleTested: [
+            { text: '116', value: '53' },
+            { text: '130', value: '59' },
+            { text: '145', value: '66' },
+            { text: '163', value: '74' },
+            { text: '183', value: '83' },
+            { text: '205', value: '93' },
+            { text: '231', value: '105' },
+            { text: '264', value: '105' },
+            { text: '264+', value: '120+' },
+          ],
+          MaleUntested: [
+            { text: '114', value: '52' },
+            { text: '123', value: '56' },
+            { text: '132', value: '60' },
+            { text: '148', value: '67.5' },
+            { text: '165', value: '75' },
+            { text: '181', value: '82.5' },
+            { text: '198', value: '90' },
+            { text: '220', value: '100' },
+            { text: '242', value: '110' },
+            { text: '275', value: '125' },
+            { text: '308', value: '140' },
+            { text: '308+', value: '140+' },
+          ],
+          FemaleTested: [
+            { text: '94', value: '43' },
+            { text: '103', value: '47' },
+            { text: '114', value: '52' },
+            { text: '125', value: '57' },
+            { text: '138', value: '63' },
+            { text: '152', value: '69' },
+            { text: '168', value: '76' },
+            { text: '185', value: '84' },
+            { text: '185+', value: '84' },
+          ],
+          FemaleUntested: [
+            { text: '97', value: '44' },
+            { text: '105', value: '48' },
+            { text: '114', value: '52' },
+            { text: '123', value: '56' },
+            { text: '132', value: '60' },
+            { text: '148', value: '67' },
+            { text: '165', value: '75' },
+            { text: '181', value: '82' },
+            { text: '198', value: '90' },
+            { text: '198+', value: '90' },
+          ],
         },
       },
-      weightClass: '74',
-      testedSelections: ['Tested', 'Untested'],
+      weightClass: '',
+      testedSelections: [
+        { text: 'Drug Tested Only', value: 'Tested' },
+        { text: 'All Results', value: 'Untested' },
+      ],
       testedStatus: 'Tested',
       // resSquat: '',
       // resBench: '',
@@ -156,9 +319,10 @@ export default {
       formBench: '',
       formDeadlift: '',
       formTotal: '',
-      showData: true,
+      showData: false,
       percentilesShown: 5,
       unit: 'kg',
+      knee: 'Raw',
 
     };
   },
@@ -169,52 +333,54 @@ export default {
       }
       if (this.unit === 'lb') {
         const index = this.weightClassAll.lb[`${this.gender}${this.testedStatus}`].indexOf(this.weightClass);
-        console.log(index);
-        console.log(this.weightClassAll.kg[`${this.gender}${this.testedStatus}`][index]);
         return this.weightClassAll.kg[`${this.gender}${this.testedStatus}`][index];
       }
 
       return this.weightClass;
     },
+    unitMultiplier() {
+      return (this.unit === 'kg' ? 1 : 2.204);
+    },
+    kneeLabel() {
+      return (this.knee === 'Raw' ? 'Sleeves' : 'Wraps');
+    },
     classData() {
-      if (this.weightClassSelections.includes(this.weightClass) === false) {
+      const reducedWeightClasses = this.weightClassSelections.map((item) => item.value);
+      if (reducedWeightClasses.includes(this.weightClass) === false) {
         return [];
       }
-      const wClassCode = `${this.gender.slice(0, 1)}${this.weightClass}raw`;
-      console.log(wClassCode);
+
+      const wClassCode = `${this.gender.slice(0, 1)}${this.weightClass}${this.knee}`;
       const fullData = allData[wClassCode];
       const minData = {};
       const keys = Object.keys(fullData);
 
       keys.forEach((key, index) => {
-        console.log(`${key} ${index}`);
-        console.log(fullData[key]);
+        console.log(index);
         minData[key] = fullData[key].filter((item) => item[0] % this.percentilesShown === 0);
       });
       return minData;
     },
     classDataSize() {
-      if (this.weightClassSelections.includes(this.weightClass) === false) {
+      const reducedWeightClasses = this.weightClassSelections.map((item) => item.value);
+      if (reducedWeightClasses.includes(this.weightClass) === false) {
         return '';
       }
-      const wClassCode = `${this.gender.slice(0, 1)}${this.weightClass}raw`;
-      console.log(wClassCode);
-      const classSize = allData[wClassCode].Total[1][3];
+      const wClassCode = `${this.gender.slice(0, 1)}${this.weightClass}${this.knee}`;
+      const classSize = allData[wClassCode].Total[1][2];
       return classSize * 100;
     },
     weightClassSelections() {
       const wclass = `${this.gender}${this.testedStatus}`;
-      console.log(wclass);
-      console.log(this.unit);
       return this.weightClassAll[this.unit][wclass];
     },
     resSquat() {
       if (this.weightClass === '') {
         return 0;
       }
-      const res = allData[`${this.gender.slice(0, 1)}${this.weightClass}raw`].Squat;
+      const res = allData[`${this.gender.slice(0, 1)}${this.weightClass}${this.knee}`].Squat;
       // const res = [[0, 1]];
-      const filtered = res.filter((oneDay) => oneDay[1] > this.formSquat);
+      const filtered = res.filter((oneDay) => oneDay[1] > this.formSquat / this.unitMultiplier);
       if (filtered.length === 0) {
         return 100;
       }
@@ -224,8 +390,8 @@ export default {
       if (this.weightClass === '') {
         return 0;
       }
-      const res = allData[`${this.gender.slice(0, 1)}${this.weightClass}raw`].Bench;
-      const filtered = res.filter((oneDay) => oneDay[1] > this.formBench);
+      const res = allData[`${this.gender.slice(0, 1)}${this.weightClass}${this.knee}`].Bench;
+      const filtered = res.filter((oneDay) => oneDay[1] > this.formBench / this.unitMultiplier);
       if (filtered.length === 0) {
         return 100;
       }
@@ -233,15 +399,12 @@ export default {
     },
     resDeadlift() {
       if (this.weightClass === '') {
-        console.log('breaks');
         return 0;
       }
-      console.log('check');
-      console.log(this.allData);
 
-      const res = allData[`${this.gender.slice(0, 1)}${this.weightClass}raw`].Deadlift;
+      const res = allData[`${this.gender.slice(0, 1)}${this.weightClass}${this.knee}`].Deadlift;
       // const res = [[0, 1]];
-      const filtered = res.filter((oneDay) => oneDay[1] > this.formDeadlift);
+      const filtered = res.filter((oneDay) => oneDay[1] > this.formDeadlift / this.unitMultiplier);
       if (filtered.length === 0) {
         return 100;
       }
@@ -251,9 +414,9 @@ export default {
       if (this.weightClass === '') {
         return 0;
       }
-      const res = allData[`${this.gender.slice(0, 1)}${this.weightClass}raw`].Total;
+      const res = allData[`${this.gender.slice(0, 1)}${this.weightClass}${this.knee}`].Total;
       // const res = [[0, 1]];
-      const filtered = res.filter((oneDay) => oneDay[1] > this.formTotal);
+      const filtered = res.filter((oneDay) => oneDay[1] > this.formTotal / this.unitMultiplier);
       if (filtered.length === 0) {
         return 100;
       }
@@ -264,11 +427,23 @@ export default {
     resetOption() {
       this.weightClass = 'N/A';
       this.showData = false;
+      this.knee = 'Raw';
       // this.weightClass = '';
     },
     showTableData() {
       this.showData = true;
-      console.log('show data?');
+    },
+    myRound(num) {
+      if (Number.isInteger(num)) {
+        return num;
+      }
+      return num.toFixed(1);
+    },
+    resetLifts() {
+      this.formSquat = '';
+      this.formBench = '';
+      this.formDeadlift = '';
+      this.formTotal = '';
     },
     // showClassData() {
     //   console.log('Test');

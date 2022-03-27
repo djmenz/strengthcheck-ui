@@ -6,25 +6,8 @@
       dark
     >
       <div class="d-flex align-center">
-        <v-img
-          alt="Vuetify Logo"
-          class="shrink mr-2"
-          contain
-          src="https://cdn.vuetifyjs.com/images/logos/vuetify-logo-dark.png"
-          transition="scale-transition"
-          width="40"
-        />
-
-        <v-img
-          alt="Vuetify Name"
-          class="shrink mt-1 hidden-sm-and-down"
-          contain
-          min-width="100"
-          src="https://cdn.vuetifyjs.com/images/logos/vuetify-name-dark.png"
-          width="100"
-        />
+    <h1>StrengthCheck.me</h1>
       </div>
-
       <v-spacer></v-spacer>
 
       <v-btn
@@ -61,10 +44,16 @@
       </v-btn>
       <v-col
         class="primary lighten-2 py-4 text-center white--text"
-        cols="12"
+        cols="8"
       >
-      <strong>This page relies on data from the OpenPowerlifting project - https://www.openpowerlifting.org</strong>
+      <strong>This page relies on data sourced from the OpenPowerlifting project - <a href="https://www.openpowerlifting.org">https://www.openpowerlifting.org</a></strong>
       </v-col>
+            <v-col
+        class="primary lighten-2 py-4 text-right white--text"
+        cols="4"
+      >
+ Contact - daniel.j.menz@gmail.com
+            </v-col>
     </v-row>
   </v-footer>
 
