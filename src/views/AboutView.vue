@@ -3,11 +3,11 @@
     <h2>Select a weight class, enter your lifts, see how you rank</h2>
       <div id="app">
             <div>
-              <v-container fluid>
+    <v-container fluid>
     <v-row>
       <!-- <v-col cols="4" justify="center">
       </v-col> -->
-    <v-col cols="12" justify="center">
+      <v-col>
         <v-select
               :items="genderSelections"
               v-model="gender"
@@ -27,10 +27,6 @@
               :outlined=true
               @change="resetOption()"
             ></v-select>
-
-            <v-row>
-
-              <v-col cols="8" justify="center">
               <v-select
                 :items="weightClassSelections"
                 v-model="weightClass"
@@ -41,9 +37,8 @@
                 :label="`Weight Class (${unit})`"
                 @change="showTableData()"
               ></v-select>
-              </v-col>
-
-            <v-col cols="4" justify="center">
+      </v-col>
+      <v-col>
               <v-switch
                v-model="unit"
                true-value=lb
@@ -51,20 +46,20 @@
               :label="`Units: ${unit.toString()}`"
                ></v-switch>
               </v-col>
+      <!-- <v-spacer>
+      </v-spacer> -->
+      </v-row>
 
-            </v-row>
-            </v-col>
-<v-container fluid>
     <v-row>
-            <v-col cols="8" justify="center">
+      <v-col justify="center">
             <v-text-field
             v-model="formSquat"
             :outlined=true
             type="number"
-            :label="`Enter your Squat 1RM (${unit})`"
+            :label="`Enter Squat 1RM (${unit})`"
           ></v-text-field>
             </v-col>
-            <v-col cols="4" justify="center">
+            <v-col justify="center">
                 <v-switch
                v-if="testedStatus==='Untested'"
                v-model="knee"
@@ -74,75 +69,68 @@
                ></v-switch>
             </v-col>
     </v-row>
-</v-container>
 
-<v-container fluid>
     <v-row>
-            <v-col cols="8" justify="center">
+
+            <v-col  justify="center">
             <v-text-field
             v-model="formBench"
             :outlined=true
             type="number"
-            :label="`Enter your Bench 1RM (${unit})`"
+            :label="`Enter Bench 1RM (${unit})`"
           ></v-text-field>
             <v-text-field
             v-model="formDeadlift"
             :outlined=true
             type="number"
-            :label="`Enter your Deadlift 1RM (${unit})`"
+            :label="`Enter Deadlift 1RM (${unit})`"
           ></v-text-field>
-           </v-col>
-    </v-row>
-
-</v-container>
-          <v-row>
-            <v-col cols="8" justify="center">
 
             <v-text-field
             v-model="formTotal"
             :outlined=true
             type="number"
-            :label="`Enter your best Total (${unit})`"
+            :label="`Enter Best Total (${unit})`"
           ></v-text-field>
             </v-col>
-          <v-col cols="3" justify="center">
+          <v-col justify="center">
             <v-btn
             color="white"
-            class="mr-3"
+            class="mr-4"
             @click="resetLifts()"
           >
-            Reset
+            Reset Lifts
           </v-btn>
            </v-col>
             </v-row>
 
-            </v-row>
-            </v-container>
+</v-container>
             </div>
 
-            <v-container fluid>
+   <v-container fluid>
           <v-row v-if="showData">
-      <v-col cols="12" justify="center">
-        <v-row> <h3>Compared to all lifters in the {{gender}} {{weightClass}}
+      <v-col justify="start">
+        <v-row no-gutters> <h3>Compared to all lifters in the {{gender}} {{weightClass}}
           ({{testedStatus}} {{knee}}) class - approx {{classDataSize}} lifters:</h3>
         </v-row>
-        <v-row>
+        <v-row no-gutters>
       Your Squat is better or equal than {{resSquat}}%
-      </v-row>
-        <v-row>
+      </v-row >
+        <v-row no-gutters>
       Your Bench is better or equal than {{resBench}}%
       </v-row>
-        <v-row>
+        <v-row no-gutters>
       Your Deadlift is better or equal than {{resDeadlift}}%
       </v-row>
-        <v-row>
+        <v-row no-gutters>
       Your Total is better or equal than {{resTotal}}%
       </v-row>
       </v-col>
           </v-row>
  </v-container>
+
  <v-container fluid>
-     <v-row v-if="showData">
+     <v-row v-if="showData" no-gutters>
                  <v-switch
                v-model="percentilesShown"
                true-value=1
@@ -180,7 +168,7 @@
       * Note Bench and Deadlift tables include single lift competition results
         <!-- <ul><li v-for="elem in row" :key="elem">{{elem}}</li></ul> -->
 </v-row>
-<v-row v-if="!showData">
+<v-row v-if="!showData" no-gutters>
   <h3>Please Select a Weight Class</h3>
 </v-row>
  </v-container>
