@@ -1,6 +1,6 @@
 <template>
   <div class="about">
-    <h1>Select a weight class, enter your lifts, see how you rank</h1>
+    <h2>Select a weight class, enter your lifts, see how you rank</h2>
       <div id="app">
             <div>
               <v-container fluid>
@@ -14,7 +14,7 @@
               item-text="name"
               item-value="id"
               label="Gender"
-              outlined="true"
+              :outlined=true
               @change="resetOption()"
             ></v-select>
 
@@ -24,7 +24,7 @@
               item-text="text"
               item-value="value"
               label="Division"
-              outlined="true"
+              :outlined=true
               @change="resetOption()"
             ></v-select>
 
@@ -36,7 +36,7 @@
                 v-model="weightClass"
                 item-text="text"
                 item-value="value"
-                outlined="true"
+                :outlined=true
                 :menu-props="{maxHeight: 804}"
                 :label="`Weight Class (${unit})`"
                 @change="showTableData()"
@@ -59,7 +59,7 @@
             <v-col cols="8" justify="center">
             <v-text-field
             v-model="formSquat"
-            outlined="true"
+            :outlined=true
             type="number"
             :label="`Enter your Squat 1RM (${unit})`"
           ></v-text-field>
@@ -81,13 +81,13 @@
             <v-col cols="8" justify="center">
             <v-text-field
             v-model="formBench"
-             outlined=true
+            :outlined=true
             type="number"
             :label="`Enter your Bench 1RM (${unit})`"
           ></v-text-field>
             <v-text-field
             v-model="formDeadlift"
-             outlined=true
+            :outlined=true
             type="number"
             :label="`Enter your Deadlift 1RM (${unit})`"
           ></v-text-field>
@@ -100,7 +100,7 @@
 
             <v-text-field
             v-model="formTotal"
-             outlined=true
+            :outlined=true
             type="number"
             :label="`Enter your best Total (${unit})`"
           ></v-text-field>
@@ -184,7 +184,6 @@
   <h3>Please Select a Weight Class</h3>
 </v-row>
  </v-container>
-      <!-- {{ data }} -->
   </div>
 
   </div>
@@ -196,61 +195,57 @@ import allData from '../../all_data.json';
 export default {
   data() {
     return {
-      // data: allData,
       genderSelections: ['Male', 'Female'],
       gender: 'Male',
-      liftFormRules: [
-        (v) => typeof v === 'number' || 'Must be a number', // doesnt work
-      ],
       weightClassAll: {
         kg: {
           MaleTested: [
-            { text: '53 (Under 53)', value: '53' },
-            { text: '59 (Between 53.0 -> 58.9)', value: '59' },
-            { text: '66 (Between 59.0 -> 65.9)', value: '66' },
-            { text: '74 (Between 66.0 -> 73.9)', value: '74' },
-            { text: '83 (Between 74.0 -> 82.9)', value: '83' },
-            { text: '93 (Between 83.0 -> 92.9)', value: '93' },
-            { text: '105 (Between 93.0 -> 104.9)', value: '105' },
-            { text: '120 (Between 105.0 -> 119.9)', value: '120' },
-            { text: '120+ (Over 120)', value: '120+' },
+            { text: '53 kg (Under 53.0)', value: '53' },
+            { text: '59 kg (Between 53.0 -> 59.0)', value: '59' },
+            { text: '66 kg (Between 59.0 -> 66.0)', value: '66' },
+            { text: '74 kg (Between 66.0 -> 74.0)', value: '74' },
+            { text: '83 kg (Between 74.0 -> 83.0)', value: '83' },
+            { text: '93 kg (Between 83.0 -> 93.0)', value: '93' },
+            { text: '105 kg (Between 93.0 -> 105.0)', value: '105' },
+            { text: '120 kg (Between 105.0 -> 120.0)', value: '120' },
+            { text: '120+ kg (Over 120)', value: '120+' },
           ],
           MaleUntested: [
-            { text: '52 (Under 52)', value: '52' },
-            { text: '56 (Between 52.0 -> 55.9)', value: '56' },
-            { text: '60 (Between 56.0 -> 59.9)', value: '60' },
-            { text: '67.5 (Between 60.0 -> 67.4)', value: '67.5' },
-            { text: '75 (Between 67.5 -> 74.9)', value: '75' },
-            { text: '82.5 (Between 75.0 -> 82.4)', value: '82.5' },
-            { text: '90 (Between 82.5 -> 89.9)', value: '90' },
-            { text: '100 (Between 90.0 -> 99.9)', value: '100' },
-            { text: '110 (Between 100.0 -> 109.9)', value: '110' },
-            { text: '125 (Between 110.0 -> 124.9)', value: '125' },
-            { text: '140 (Between 125.0 -> 139.9)', value: '140' },
-            { text: '140+', value: '140+' },
+            { text: '52 kg (Under 52)', value: '52' },
+            { text: '56 kg (Between 52.0 -> 56.0)', value: '56' },
+            { text: '60 kg (Between 56.0 -> 60.0)', value: '60' },
+            { text: '67.5 kg (Between 60.0 -> 67.5)', value: '67.5' },
+            { text: '75 kg (Between 67.5 -> 75.0)', value: '75' },
+            { text: '82.5 kg (Between 75.0 -> 82.5)', value: '82.5' },
+            { text: '90 kg (Between 82.5 -> 90.0)', value: '90' },
+            { text: '100 kg (Between 90.0 -> 100.0)', value: '100' },
+            { text: '110 kg (Between 100.0 -> 110.0)', value: '110' },
+            { text: '125 kg (Between 110.0 -> 125.0)', value: '125' },
+            { text: '140 kg (Between 125.0 -> 140.0)', value: '140' },
+            { text: '140+ kg (Over 140)', value: '140+' },
           ],
           FemaleTested: [
-            { text: '43 (Under 43)', value: '43' },
-            { text: '47 (Between 43.0 -> 46.9)', value: '47' },
-            { text: '52 (Between 47.0 -> 51.9)', value: '52' },
-            { text: '57 (Between 52.0 -> 56.9)', value: '57' },
-            { text: '63 (Between 57.0 -> 62.9)', value: '63' },
-            { text: '69 (Between 63.0 -> 68.9)', value: '69' },
-            { text: '76 (Between 69.0 -> 75.9)', value: '76' },
-            { text: '84 (Between 76.0 -> 83.9)', value: '84' },
-            { text: '84+ (Over 84)', value: '84+' },
+            { text: '43 kg (Under 43)', value: '43' },
+            { text: '47 kg (Between 43.0 -> 47.0)', value: '47' },
+            { text: '52 kg (Between 47.0 -> 52.0)', value: '52' },
+            { text: '57 kg (Between 52.0 -> 57.0)', value: '57' },
+            { text: '63 kg (Between 57.0 -> 63.0)', value: '63' },
+            { text: '69 kg (Between 63.0 -> 69.0)', value: '69' },
+            { text: '76 kg (Between 69.0 -> 76.0)', value: '76' },
+            { text: '84 kg (Between 76.0 -> 84.0)', value: '84' },
+            { text: '84+ kg (Over 84)', value: '84+' },
           ],
           FemaleUntested: [
-            { text: '44 (Under 44)', value: '44' },
-            { text: '48 (Between 44.0 -> 47.9)', value: '48' },
-            { text: '52 (Between 48.0 -> 51.9)', value: '52' },
-            { text: '56 (Between 52.0 -> 55.9)', value: '56' },
-            { text: '60 (Between 56.0 -> 59.9)', value: '60' },
-            { text: '67.5 (Between 60.0 -> 67.4)', value: '67.5' },
-            { text: '75 (Between 67.5 -> 74.9)', value: '75' },
-            { text: '82.5 (Between 75.0 -> 82.4)', value: '82.5' },
-            { text: '90 (Between 82.5 -> 89.9)', value: '90' },
-            { text: '90+ (Over 90)', value: '90+' },
+            { text: '44 kg (Under 44)', value: '44' },
+            { text: '48 kg (Between 44.0 -> 48.0)', value: '48' },
+            { text: '52 kg (Between 48.0 -> 52.0)', value: '52' },
+            { text: '56 kg (Between 52.0 -> 56.0)', value: '56' },
+            { text: '60 kg (Between 56.0 -> 60.0)', value: '60' },
+            { text: '67.5 kg (Between 60.0 -> 67.5)', value: '67.5' },
+            { text: '75 kg (Between 67.5 -> 75.0)', value: '75' },
+            { text: '82.5 kg (Between 75.0 -> 82.5)', value: '82.5' },
+            { text: '90 kg (Between 82.5 -> 90.0)', value: '90' },
+            { text: '90+ kg (Over 90)', value: '90+' },
           ],
         },
         lb: {
@@ -310,10 +305,6 @@ export default {
         { text: 'All Results', value: 'Untested' },
       ],
       testedStatus: 'Tested',
-      // resSquat: '',
-      // resBench: '',
-      // resDeadlift: '',
-      // resTotal: '55',
       formSquat: '',
       formBench: '',
       formDeadlift: '',
@@ -354,8 +345,7 @@ export default {
       const minData = {};
       const keys = Object.keys(fullData);
 
-      keys.forEach((key, index) => {
-        console.log(index);
+      keys.forEach((key) => {
         minData[key] = fullData[key].filter((item) => item[0] % this.percentilesShown === 0);
       });
       return minData;
@@ -378,7 +368,6 @@ export default {
         return 0;
       }
       const res = allData[`${this.gender.slice(0, 1)}${this.weightClass}${this.knee}`].Squat;
-      // const res = [[0, 1]];
       const filtered = res.filter((oneDay) => oneDay[1] > this.formSquat / this.unitMultiplier);
       if (filtered.length === 0) {
         return 100;
@@ -402,7 +391,6 @@ export default {
       }
 
       const res = allData[`${this.gender.slice(0, 1)}${this.weightClass}${this.knee}`].Deadlift;
-      // const res = [[0, 1]];
       const filtered = res.filter((oneDay) => oneDay[1] > this.formDeadlift / this.unitMultiplier);
       if (filtered.length === 0) {
         return 100;
@@ -414,7 +402,6 @@ export default {
         return 0;
       }
       const res = allData[`${this.gender.slice(0, 1)}${this.weightClass}${this.knee}`].Total;
-      // const res = [[0, 1]];
       const filtered = res.filter((oneDay) => oneDay[1] > this.formTotal / this.unitMultiplier);
       if (filtered.length === 0) {
         return 100;
@@ -444,30 +431,6 @@ export default {
       this.formDeadlift = '';
       this.formTotal = '';
     },
-    // showClassData() {
-    //   console.log('Test');
-    //   if (this.weightClass === '') {
-    //     this.classData2 = [];
-    //   }
-    //   const wClassCode = `${this.gender.slice(0, 1)}${this.weightClass}raw`;
-    //   console.log(wClassCode);
-    //   this.classData2 = allData[wClassCode];
-    // },
-    // genData(){
-    //   if (this.weightClassSelections.includes(this.weightClass) === false) {
-    //     return [];
-    //   }
-    //   const wClassCode = `${this.gender.slice(0, 1)}${this.weightClass}raw`;
-    //   console.log(wClassCode);
-    //   return allData[wClassCode];
-    // },
-
-    // let tempWeightClass = this.weightClass;
-    // if (this.unit === 'lb') {
-    //   const index = this.weightClassAll.lb[`${this.gender}${this.testedStatus}`].
-    // indexOf(this.weightClass);
-    //   tempWeightClass = this.weightClassAll.kg[`${this.gender}${this.testedStatus}`][index];
-    // }
 
   },
 };
