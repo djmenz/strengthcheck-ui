@@ -5,8 +5,6 @@
             <div>
     <v-container fluid>
     <v-row>
-      <!-- <v-col cols="4" justify="center">
-      </v-col> -->
       <v-col>
         <v-select
               :items="genderSelections"
@@ -139,8 +137,6 @@
                ></v-switch>
                </v-row>
 <v-row v-if="showData">
-<!-- <v-col cols="3" justify="center">
-      </v-col> -->
   <v-col cols="3" justify="center">
     <tr><h4>Pecentile</h4></tr>
      <tr v-for="(item) of classData.Squat" :key="item">{{item[0]}}</tr>
@@ -166,10 +162,9 @@
         :key="item"> {{myRound(item[1] * unitMultiplier)}}</tr>
       </v-col>
       * Note Bench and Deadlift tables include single lift competition results
-        <!-- <ul><li v-for="elem in row" :key="elem">{{elem}}</li></ul> -->
 </v-row>
 <v-row v-if="!showData" no-gutters>
-  <h3>Please Select a Weight Class</h3>
+  <h3  style="color:red">Please Select a Weight Class</h3>
 </v-row>
  </v-container>
   </div>
@@ -238,52 +233,52 @@ export default {
         },
         lb: {
           MaleTested: [
-            { text: '116', value: '53' },
-            { text: '130', value: '59' },
-            { text: '145', value: '66' },
-            { text: '163', value: '74' },
-            { text: '183', value: '83' },
-            { text: '205', value: '93' },
-            { text: '231', value: '105' },
-            { text: '264', value: '105' },
-            { text: '264+', value: '120+' },
+            { text: '116 lbs (Under 116)', value: '53' },
+            { text: '130 lbs (Between 116.0 -> 130.0)', value: '59' },
+            { text: '145 lbs (Between 130.0 -> 145.0)', value: '66' },
+            { text: '163 lbs (Between 145.0 -> 163.0)', value: '74' },
+            { text: '183 lbs (Between 163.0 -> 185.0)', value: '83' },
+            { text: '205 lbs (Between 183.0 -> 205.0)', value: '93' },
+            { text: '231 lbs (Between 205.0 -> 231.0)', value: '105' },
+            { text: '264 lbs (Between 231.0 -> 264.0)', value: '105' },
+            { text: '264+ lbs (Over 264)', value: '120+' },
           ],
           MaleUntested: [
-            { text: '114', value: '52' },
-            { text: '123', value: '56' },
-            { text: '132', value: '60' },
-            { text: '148', value: '67.5' },
-            { text: '165', value: '75' },
-            { text: '181', value: '82.5' },
-            { text: '198', value: '90' },
-            { text: '220', value: '100' },
-            { text: '242', value: '110' },
-            { text: '275', value: '125' },
-            { text: '308', value: '140' },
-            { text: '308+', value: '140+' },
+            { text: '114 lbs (Under 114)', value: '52' },
+            { text: '123 lbs (Between 114.0 -> 123.0)', value: '56' },
+            { text: '132 lbs (Between 123.0 -> 132.0)', value: '60' },
+            { text: '148 lbs (Between 132.0 -> 148.0)', value: '67.5' },
+            { text: '165 lbs (Between 148.0 -> 165.0)', value: '75' },
+            { text: '181 lbs (Between 165.0 -> 181.0)', value: '82.5' },
+            { text: '198 lbs (Between 181.0 -> 198.0)', value: '90' },
+            { text: '220 lbs (Between 198.0 -> 220.0)', value: '100' },
+            { text: '242 lbs (Between 220.0 -> 242.0)', value: '110' },
+            { text: '275 lbs (Between 242.0 -> 275.0)', value: '125' },
+            { text: '308 lbs (Between 275.0 -> 308.0)', value: '140' },
+            { text: '308+ lbs (Over 308)', value: '140+' },
           ],
           FemaleTested: [
-            { text: '94', value: '43' },
-            { text: '103', value: '47' },
-            { text: '114', value: '52' },
-            { text: '125', value: '57' },
-            { text: '138', value: '63' },
-            { text: '152', value: '69' },
-            { text: '168', value: '76' },
-            { text: '185', value: '84' },
-            { text: '185+', value: '84' },
+            { text: '94 lbs (Under 94)', value: '43' },
+            { text: '103 lbs (Between 95.0 -> 103.0)', value: '47' },
+            { text: '114 lbs (Between 103.0 -> 114.0)', value: '52' },
+            { text: '125 lbs (Between 114.0 -> 125.0)', value: '57' },
+            { text: '138 lbs (Between 125.0 -> 138.0)', value: '63' },
+            { text: '152 lbs (Between 138.0 -> 152.0)', value: '69' },
+            { text: '168 lbs (Between 152.0 -> 168.0)', value: '76' },
+            { text: '185 lbs (Between 168.0 -> 185.0)', value: '84' },
+            { text: '185+ lbs (Over 185)', value: '84' },
           ],
           FemaleUntested: [
-            { text: '97', value: '44' },
-            { text: '105', value: '48' },
-            { text: '114', value: '52' },
-            { text: '123', value: '56' },
-            { text: '132', value: '60' },
-            { text: '148', value: '67' },
-            { text: '165', value: '75' },
-            { text: '181', value: '82' },
-            { text: '198', value: '90' },
-            { text: '198+', value: '90' },
+            { text: '97 lbs (Under 97)', value: '44' },
+            { text: '105 lbs (Between 97.0 -> 105.0)', value: '48' },
+            { text: '114 lbs (Between 105.0 -> 114.0)', value: '52' },
+            { text: '123 lbs (Between 114.0 -> 123.0)', value: '56' },
+            { text: '132 lbs (Between 123.0 -> 132.0)', value: '60' },
+            { text: '148 lbs (Between 132.0 -> 148.0)', value: '67' },
+            { text: '165 lbs (Between 148.0 -> 165.0)', value: '75' },
+            { text: '181 lbs (Between 165.0 -> 181.0)', value: '82' },
+            { text: '198 lbs (Between 181.0 -> 198.0)', value: '90' },
+            { text: '198+ lbs (Over 198)', value: '90' },
           ],
         },
       },
@@ -402,7 +397,6 @@ export default {
       this.weightClass = 'N/A';
       this.showData = false;
       this.knee = 'Raw';
-      // this.weightClass = '';
     },
     showTableData() {
       this.showData = true;

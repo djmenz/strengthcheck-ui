@@ -14,6 +14,7 @@ npm run serve
 ```
 npm run build
 ```
+Then copy this to the s3 bucket or whatever
 
 ### Run your tests
 ```

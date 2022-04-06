@@ -21,17 +21,57 @@
           v-bind="attrs"
           v-on="on"
         >
-          Contact
+          F.A.Q
         </v-btn>
       </template>
-
       <v-card>
         <v-card-title class="text-h5 grey lighten-2">
-          Questions
+         F.A.Q
         </v-card-title>
 
         <v-card-text>
-          For any questions/suggestions, please contact via email - daniel.j.menz@gmail.com
+
+        <div>
+          <strong>Where does this data come from?</strong>
+          </div>
+          <div>
+           This page relies on data sourced from the (awesome) OpenPowerlifting project -
+           <a href="https://www.openpowerlifting.org">https://www.openpowerlifting.org</a>, this can be downloaded
+           from  <a href="https://openpowerlifting.gitlab.io/opl-csv/">https://openpowerlifting.gitlab.io/opl-csv/</a>
+        </div>
+        <br>
+
+          <div>
+          <strong>What exact data is presented?</strong>
+          </div>
+          <div>
+            The drug tested results come from all IPF results. All Results shows all competitions,
+             tested and untested.
+            Note that Bench and Deadlift results include all results from single lift/push pull
+             competitions,
+             where as Squat and Total
+            are only from full 3 lift competition results. (I may put this as a toggle
+            option later)
+        </div>
+        <br>
+
+         <div>
+          <strong>Can you give results for only some age groups?</strong>
+          </div>
+          <div>
+            Not currently but this feature may be added (Let me know if you
+            would find this useful.)
+        </div>
+        <br>
+
+          <div>
+          <strong>For any questions/suggestions</strong>
+          </div>
+          <div>
+            Please contact via email - daniel.j.menz@gmail.com
+        </div>
+        <br>
+
         </v-card-text>
 
         <v-divider></v-divider>
@@ -49,14 +89,6 @@
       </v-card>
     </v-dialog>
   </div>
-      <!-- <v-btn
-        href="/about"
-        target="_blank"
-        text
-      >
-        <span class="mr-2">F.A.Q</span>
-        <v-icon>mdi-open-in-new</v-icon>
-      </v-btn> -->
     </v-app-bar>
 
     <v-main>
