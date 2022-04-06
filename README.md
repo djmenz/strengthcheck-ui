@@ -5,6 +5,9 @@
 npm install
 ```
 
+### Generate an upto date all_data.json
+https://github.com/djmenz/strengthcheck
+
 ### Compiles and hot-reloads for development
 ```
 npm run serve
@@ -14,7 +17,7 @@ npm run serve
 ```
 npm run build
 ```
-Then copy this to the s3 bucket or whatever
+Then copy the dist folder to your static webhosting location/method
 
 ### Run your tests
 ```
