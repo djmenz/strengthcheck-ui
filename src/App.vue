@@ -56,11 +56,11 @@
         <br>
 
          <div>
-          <strong>Can you give results for only some age groups?</strong>
+          <strong>Can the code for this project be viewed?</strong>
           </div>
           <div>
-            Not currently but this feature may be added (Let me know if you
-            would find this useful.)
+          <a href="https://github.com/djmenz/strengthcheck-ui">https://github.com/djmenz/strengthcheck-ui</a><br>
+          <a href=" https://github.com/djmenz/strengthcheck"> https://github.com/djmenz/strengthcheck</a>
         </div>
         <br>
 

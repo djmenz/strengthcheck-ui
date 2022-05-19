@@ -16,6 +16,15 @@
               @change="resetOption()"
             ></v-select>
 
+        <v-select
+              :items="ageSelections"
+              v-model="age"
+              item-text="text"
+              item-value="value"
+              label="Age Bracket"
+              :menu-props="{maxHeight: 804}"
+              :outlined=true
+            ></v-select>
             <v-select
               :items="testedSelections"
               v-model="testedStatus"
@@ -108,8 +117,9 @@
    <v-container fluid>
           <v-row v-if="showData">
       <v-col justify="start">
-        <v-row no-gutters> <h3>Compared to all lifters in the {{gender}} {{weightClass}}
-          ({{testedStatus}} {{knee}}) class - approx {{classDataSize}} lifters:</h3>
+        <v-row no-gutters> <h3>Compared to all lifters in the {{gender}} {{weightClass}}kg
+        ({{returnAgeClass(age)}}) ({{testedStatus}} {{knee}})
+        class - approx {{classDataSize}} lifters:</h3>
         </v-row>
         <v-row no-gutters>
       Your Squat is better or equal than {{resSquat}}%
@@ -240,7 +250,7 @@ export default {
             { text: '183 lbs (Between 163.0 -> 185.0)', value: '83' },
             { text: '205 lbs (Between 183.0 -> 205.0)', value: '93' },
             { text: '231 lbs (Between 205.0 -> 231.0)', value: '105' },
-            { text: '264 lbs (Between 231.0 -> 264.0)', value: '105' },
+            { text: '264 lbs (Between 231.0 -> 264.0)', value: '120' },
             { text: '264+ lbs (Over 264)', value: '120+' },
           ],
           MaleUntested: [
@@ -266,7 +276,7 @@ export default {
             { text: '152 lbs (Between 138.0 -> 152.0)', value: '69' },
             { text: '168 lbs (Between 152.0 -> 168.0)', value: '76' },
             { text: '185 lbs (Between 168.0 -> 185.0)', value: '84' },
-            { text: '185+ lbs (Over 185)', value: '84' },
+            { text: '185+ lbs (Over 185)', value: '84+' },
           ],
           FemaleUntested: [
             { text: '97 lbs (Under 97)', value: '44' },
@@ -278,7 +288,7 @@ export default {
             { text: '165 lbs (Between 148.0 -> 165.0)', value: '75' },
             { text: '181 lbs (Between 165.0 -> 181.0)', value: '82' },
             { text: '198 lbs (Between 181.0 -> 198.0)', value: '90' },
-            { text: '198+ lbs (Over 198)', value: '90' },
+            { text: '198+ lbs (Over 198)', value: '90+' },
           ],
         },
       },
@@ -288,6 +298,15 @@ export default {
         { text: 'All Results', value: 'Untested' },
       ],
       testedStatus: 'Tested',
+      ageSelections: [
+        { text: 'All Ages', value: 'AA' },
+        { text: '13 to 15 years', value: 'T1' },
+        { text: '16 to 19 years', value: 'T2' },
+        { text: '20 to 23 years', value: 'J1' },
+        { text: '24 to 39 years', value: 'O1' },
+        { text: '40 to 59 years', value: 'M1' },
+        { text: '60+ years', value: 'M2' },
+      ],
       formSquat: '',
       formBench: '',
       formDeadlift: '',
@@ -296,7 +315,7 @@ export default {
       percentilesShown: 5,
       unit: 'kg',
       knee: 'Raw',
-
+      age: 'AA',
     };
   },
   computed: {
@@ -323,7 +342,7 @@ export default {
         return [];
       }
 
-      const wClassCode = `${this.gender.slice(0, 1)}${this.weightClass}${this.knee}`;
+      const wClassCode = `${this.gender.slice(0, 1)}${this.weightClass}${this.knee}${this.age}`;
       const fullData = allData[wClassCode];
       const minData = {};
       const keys = Object.keys(fullData);
@@ -338,7 +357,7 @@ export default {
       if (reducedWeightClasses.includes(this.weightClass) === false) {
         return '';
       }
-      const wClassCode = `${this.gender.slice(0, 1)}${this.weightClass}${this.knee}`;
+      const wClassCode = `${this.gender.slice(0, 1)}${this.weightClass}${this.knee}${this.age}`;
       const classSize = allData[wClassCode].Total[1][2];
       return classSize * 100;
     },
@@ -350,7 +369,7 @@ export default {
       if (this.weightClass === '') {
         return 0;
       }
-      const res = allData[`${this.gender.slice(0, 1)}${this.weightClass}${this.knee}`].Squat;
+      const res = allData[`${this.gender.slice(0, 1)}${this.weightClass}${this.knee}${this.age}`].Squat;
       const filtered = res.filter((oneDay) => oneDay[1] > this.formSquat / this.unitMultiplier);
       if (filtered.length === 0) {
         return 100;
@@ -361,7 +380,7 @@ export default {
       if (this.weightClass === '') {
         return 0;
       }
-      const res = allData[`${this.gender.slice(0, 1)}${this.weightClass}${this.knee}`].Bench;
+      const res = allData[`${this.gender.slice(0, 1)}${this.weightClass}${this.knee}${this.age}`].Bench;
       const filtered = res.filter((oneDay) => oneDay[1] > this.formBench / this.unitMultiplier);
       if (filtered.length === 0) {
         return 100;
@@ -373,7 +392,7 @@ export default {
         return 0;
       }
 
-      const res = allData[`${this.gender.slice(0, 1)}${this.weightClass}${this.knee}`].Deadlift;
+      const res = allData[`${this.gender.slice(0, 1)}${this.weightClass}${this.knee}${this.age}`].Deadlift;
       const filtered = res.filter((oneDay) => oneDay[1] > this.formDeadlift / this.unitMultiplier);
       if (filtered.length === 0) {
         return 100;
@@ -384,7 +403,7 @@ export default {
       if (this.weightClass === '') {
         return 0;
       }
-      const res = allData[`${this.gender.slice(0, 1)}${this.weightClass}${this.knee}`].Total;
+      const res = allData[`${this.gender.slice(0, 1)}${this.weightClass}${this.knee}${this.age}`].Total;
       const filtered = res.filter((oneDay) => oneDay[1] > this.formTotal / this.unitMultiplier);
       if (filtered.length === 0) {
         return 100;
@@ -400,6 +419,10 @@ export default {
     },
     showTableData() {
       this.showData = true;
+    },
+    returnAgeClass(ageCode) {
+      const age = this.ageSelections.filter((arr) => arr.value === ageCode);
+      return age[0].text;
     },
     myRound(num) {
       if (Number.isInteger(num)) {
