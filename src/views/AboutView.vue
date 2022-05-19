@@ -286,7 +286,7 @@ export default {
             { text: '132 lbs (Between 123.0 -> 132.0)', value: '60' },
             { text: '148 lbs (Between 132.0 -> 148.0)', value: '67' },
             { text: '165 lbs (Between 148.0 -> 165.0)', value: '75' },
-            { text: '181 lbs (Between 165.0 -> 181.0)', value: '82' },
+            { text: '181 lbs (Between 165.0 -> 181.0)', value: '82.5' },
             { text: '198 lbs (Between 181.0 -> 198.0)', value: '90' },
             { text: '198+ lbs (Over 198)', value: '90+' },
           ],
