@@ -119,7 +119,7 @@
       <v-col justify="start">
         <v-row no-gutters> <h3>Compared to all lifters in the {{gender}} {{weightClass}}kg
         ({{returnAgeClass(age)}}) ({{testedStatus}} {{knee}})
-        class - approx {{classDataSize}} lifters:</h3>
+        class - {{classDataSize}} lifters:</h3>
         </v-row>
         <v-row no-gutters>
       Your Squat is better or equal than {{resSquat}}%
@@ -171,7 +171,8 @@
         <tr v-for="item of classData.Total"
         :key="item"> {{myRound(item[1] * unitMultiplier)}}</tr>
       </v-col>
-      * Note Bench and Deadlift tables include single lift competition results
+      * Note Bench and Deadlift tables include single lift competition results <br>
+      <!-- * Last updated 25 May 2022 -->
 </v-row>
 <v-row v-if="!showData" no-gutters>
   <h3  style="color:red">Please Select a Weight Class</h3>
@@ -358,8 +359,8 @@ export default {
         return '';
       }
       const wClassCode = `${this.gender.slice(0, 1)}${this.weightClass}${this.knee}${this.age}`;
-      const classSize = allData[wClassCode].Total[1][2];
-      return classSize * 100;
+      const classSize = allData.class_entries[wClassCode];
+      return classSize;
     },
     weightClassSelections() {
       const wclass = `${this.gender}${this.testedStatus}`;

@@ -109,7 +109,7 @@
         cols="12"
       >
       <strong>This page relies on data sourced from the OpenPowerlifting project - <a href="https://www.openpowerlifting.org">https://www.openpowerlifting.org</a></strong>
-            </v-col>
+      </v-col>
     </v-row>
   </v-footer>
 
@@ -124,6 +124,14 @@ export default {
     return {
       dialog: false,
     };
+  },
+  methods: {
+    currentDate() {
+      const month = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+      const current = new Date();
+      const date = `${current.getFullYear()}-${month[(current.getMonth() + 1)]}-${current.getDate()}`;
+      return date;
+    },
   },
 };
 </script>
